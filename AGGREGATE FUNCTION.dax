@@ -1,0 +1,113 @@
+﻿//eva
+EVALUATE
+	SalesData
+//count
+EVALUATE
+	row(
+	"ct",COUNT(SalesData[Category])
+	)
+	EVALUATE
+	row(
+	"ct",COUNT(SalesData[Quantity])
+	)
+//countx
+EVALUATE
+	row(
+	"x",COUNTX(SalesData,COALESCE([Quantity],0))
+	)
+//counta
+EVALUATE
+	row(
+	"a",COUNTA(SalesData[Returned])
+	)
+//count ax
+EVALUATE
+	Row(
+	"ax",COUNTAX(SalesData,COALESCE([Returned],FALSE()))
+	)
+//counting rows 
+EVALUATE
+ row(
+ "row",COUNTROWS(SalesData)
+ )
+ //eva
+EVALUATE
+	SalesData
+//count unique values 
+EVALUATE
+	ROW(
+	"dis",DISTINCTCOUNT(SalesData[Category])
+	)
+
+EVALUATE
+	ROW(
+	"dis",DISTINCTCOUNT(SalesData[Returned])
+	)
+// count no blank uniq	
+EVALUATE
+	ROW(
+	"dis",DISTINCTCOUNTNOBLANK(SalesData[Returned])
+	)
+ //min
+ EVALUATE
+ 	row(
+ 	"fff",MIN(SalesData[Quantity])
+ 	)
+ 	
+ 	EVALUATE
+	SalesData
+	
+  EVALUATE
+ 	row(
+ 	"fff",MINA(SalesData[Returned])
+ 	)
+ 	
+ EVALUATE
+ 	ROW(
+ 	"MINX",MINX(
+ 	SalesData,[Quantity]+[Rating])
+ 	)
+ 	
+ 	EVALUATE
+	SalesData
+	
+ //sum and sumx
+ EVALUATE
+ 	ROW(
+ 	"sumo",sum(SalesData[Quantity])
+ 	)
+ //sum x
+ EVALUATE
+ ROW(
+ 	"sumo",SUMX(SalesData,COALESCE([Quantity],0)
+ 	))
+ //product function 
+ EVALUATE
+ 	row(
+ 	"pro",PRODUCT(SalesData[Quantity])
+ 	)
+ 	
+ //product x 
+ EVALUATE
+ 	row(
+ 	"pro",PRODUCTX(SalesData,COALESCE([Quantity],1)
+ 	))
+//avg operator 
+EVALUATE
+	row(
+	"avg",AVERAGE(SalesData[Revenue])
+	)
+	
+EVALUATE
+	SalesData
+//avg x	
+EVALUATE
+	row(
+	"avga",AVERAGEX(SalesData,COALESCE([Revenue],0))
+	)
+	
+//avg a
+EVALUATE
+	row(
+	"ava",AVERAGEA(SalesData[Returned])
+	)

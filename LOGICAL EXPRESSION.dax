@@ -1,0 +1,110 @@
+﻿//LOGICAL EXPRESSION
+//AND  FUNCTION 
+
+EVALUATE
+	'Product Lookup'
+
+EVALUATE
+FILTER(
+	'Product Lookup',
+	AND([ProductColor]="Black",'Product Lookup'[Price Point] = "Mid-Range")
+     )
+     
+//Logical OR
+EVALUATE
+	FILTER(
+	'Product Lookup',
+	OR('Product Lookup'[ProductColor]="Red",'Product Lookup'[ProductColor]="Black")
+	)
+	
+//Logical NOt 
+EVALUATE
+	FILTER(
+	'Product Lookup',
+	NOT('Product Lookup'[ProductColor]="Red")
+	)
+	
+//IF CONDITION 
+EVALUATE
+	SUMMARIZE(
+	'Sales Data',
+	'Product Subcategories Lookup'[SubcategoryName],
+	'Product Categories Lookup'[CategoryName],
+	"TOTALAMT",SUM('Sales Data'[Revenue]),
+	"TARGET",IF(SUM('Sales Data'[Revenue]) >=20000,"ACHIEVED","FAILED")
+	)
+	
+//IF CONDITION FILTER TO GET ONLY ACHIEVE 
+EVALUATE
+FILTER(
+	SUMMARIZE(
+	'Sales Data',
+	'Product Subcategories Lookup'[SubcategoryName],
+	'Product Categories Lookup'[CategoryName],
+	"TOTALAMT",SUM('Sales Data'[Revenue]),
+	"TARGET",IF(SUM('Sales Data'[Revenue]) >=20000,"ACHIEVED","FAILED")
+	),
+	[TARGET] = "ACHIEVED"
+	)
+//TRUE AND FALSE FUNCTION 
+
+EVALUATE
+	SUMMARIZE(
+	'Sales Data',
+	'Product Categories Lookup'[CategoryName],
+	"TOTALAMT",SUM('Sales Data'[Revenue]),
+	"TARGET",IF (SUM('Sales Data'[Revenue]) >= 30000,TRUE(),FALSE())
+	)
+//IF EAGER FUNCTION(PERFORMANCE OPTIMIZING)
+DEFINE 
+VAR TAX = 18
+EVALUATE
+	SUMMARIZE(
+	'Sales Data',
+	'Product Categories Lookup'[CategoryName],
+	"TARGET",IF.EAGER (SUM('Sales Data'[Revenue]) >= 20000,
+	SUM('Sales Data'[Revenue]) * (TAX/100),
+	SUM('Sales Data'[Revenue]))
+	)
+	
+EVALUATE
+	'Sales Data'
+EVALUATE
+	'Price Adjustment (%)'
+	
+//IF ERROR
+DEFINE 
+VAR TAX = 1 
+EVALUATE
+	ADDCOLUMNS(
+	'Sales Data',
+	"EXP",IFERROR('Sales Data'[Revenue] / (TAX),0)
+	)
+EVALUATE
+	'Product Categories Lookup'
+//SWITCH WITH EXACT MATCH 
+EVALUATE
+	ADDCOLUMNS(
+	'Product Categories Lookup',
+	"CAT CODE",SWITCH('Product Categories Lookup'[CategoryName],
+	                       "Components","COM",
+	                       "Bikes","BIK",
+	                       "Clothing","CLO",
+	                       "Accessories","ACC"
+	                       ))
+EVALUATE
+	'Product Lookup'
+//SWITCH NUMBERIC 
+EVALUATE
+	SELECTCOLUMNS(
+	'Product Lookup',
+	"PROCST",'Product Lookup'[ProductCost],
+	"CATCOST",SWITCH(TRUE(),
+	'Product Lookup'[ProductCost] > 500,"HIGH COST",
+	'Product Lookup'[ProductCost] < 500,"MED COST")
+)
+	
+	
+
+                               
+	

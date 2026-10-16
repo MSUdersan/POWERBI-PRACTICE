@@ -1,0 +1,312 @@
+﻿// evaluate 
+EVALUATE
+	'Sales Data'
+//select multiple col
+EVALUATE
+	SELECTCOLUMNS(
+	'Sales Data',
+	"rev",'Sales Data'[Revenue],
+	"pri",'Sales Data'[Retail Price]
+	)
+//order by
+EVALUATE
+SELECTCOLUMNS(
+	'Product Lookup',
+	'Product Lookup'[ProductName],
+	'Product Lookup'[ProductKey],
+	'Product Lookup'[ProductCost]
+	)
+	ORDER BY 
+	[ProductCost] desc,
+	[ProductKey] asc
+//start at 
+EVALUATE
+	'Product Lookup'
+	ORDER BY
+	'Product Lookup'[ProductCost]
+	start at 419
+//row 
+EVALUATE
+	ROW(
+	"totalamt",sum('Sales Data'[Revenue])
+	)
+/// var 
+EVALUATE
+var amount = sum('Product Lookup'[ProductCost])
+var sales = sum('Sales Data'[Revenue])
+var profit = (sales - amount)  
+return
+	row(
+	"finalpro",profit
+	)
+// arith operator 
+define 
+	var tax = 18 
+EVALUATE	
+	ADDCOLUMNS(
+		'Sales Data',
+		"totalsales",('Sales Data'[Revenue] * (1+tax/100)
+		))
+	
+//comparison  operator 
+EVALUATE
+	'Territory Lookup'
+	
+EVALUATE
+	FILTER('Territory Lookup',
+	'Territory Lookup'[Country] == "Germany")
+	
+//CONCAT USING COMPARISON OPERATOR 
+EVALUATE
+	'Customer Lookup'
+EVALUATE
+	ADDCOLUMNS(
+	'Customer Lookup',
+	"FULLNAME",'Customer Lookup'[Prefix] & " " & 'Customer Lookup'[FirstName] & 'Customer Lookup'[LastName]
+	)
+EVALUATE
+	'Product Lookup'
+//LOGICAL OPERATOR
+EVALUATE
+	FILTER(
+	'Product Lookup',
+	'Product Lookup'[ProductColor] = "Black" && 'Product Lookup'[Price Point] = "Mid-Range"
+	)
+// using or ||
+EVALUATE
+	FILTER(
+	'Product Lookup',
+	'Product Lookup'[ProductColor]="Red"||'Product Lookup'[ProductColor]="Black"
+	)
+	
+EVALUATE
+	'Product Lookup'
+// using IN in logical operator 
+EVALUATE
+	FILTER(
+	'Product Lookup',
+	'Product Lookup'[ProductColor] in { "Red","Black","Yellow"}
+	)
+	
+//using or and in logical operator 
+EVALUATE
+	FILTER(
+	'Product Lookup',
+	('Product Lookup'[Price Point] = "High" || 'Product Lookup'[Price Point] = "Mid-Range") && 
+	'Product Lookup'[ProductColor] in {"Black","Red"}
+	)
+//distinct function 
+EVALUATE
+DISTINCT('Product Lookup'[ProductColor])
+
+//add coloumns
+define 
+var tax = 18 
+EVALUATE
+	ADDCOLUMNS(
+	'Sales Data',
+	"taxamt",'Sales Data'[Revenue] * (tax/100)
+	)
+	
+// create a table
+define 
+var tax = 18 
+EVALUATE
+	ADDCOLUMNS(
+	SELECTCOLUMNS(
+	'Sales Data',
+	'Sales Data'[Revenue]
+	),
+	"taxamt",'Sales Data'[Revenue] * (tax/100)
+	)
+//generate series 
+EVALUATE
+	GENERATESERIES(1,12)
+	
+// generate using contionous series 
+EVALUATE
+	GENERATESERIES(1,52,2)
+//create a data table 
+EVALUATE
+	DATATABLE(
+	"name",string,
+	"gst", INTEGER,
+	"datetime", DATETIME,
+	"amount",DOUBLE,
+	"status",BOOLEAN,
+	{
+	
+	{"san",0,"2024-10-28 00:00:10",1200.00,TRUE}
+	
+	}
+	)
+	
+EVALUATE
+'Product Lookup'
+EVALUATE
+'Product Categories Lookup'
+EVALUATE
+'Product Subcategories Lookup'
+
+	
+//GENERATE
+EVALUATE
+	GENERATE(
+	SELECTCOLUMNS(
+	'Product Categories Lookup',
+	'Product Categories Lookup'[CategoryName],'Product Categories Lookup'[ProductCategoryKey]
+	),
+	SELECTCOLUMNS(
+	FILTER('Product Subcategories Lookup',
+	'Product Subcategories Lookup'[ProductCategoryKey] = 'Product Categories Lookup'[ProductCategoryKey]),
+	'Product Subcategories Lookup'[SubcategoryName])
+	)
+	
+//NATURAL INNER JOIN 
+
+EVALUATE
+SELECTCOLUMNS(
+    NATURALINNERJOIN(
+        'Product Categories Lookup',
+        'Product Subcategories Lookup'
+    ),
+    "key", 'Product Categories Lookup'[ProductCategoryKey],
+    "cat", 'Product Categories Lookup'[CategoryName],
+    "sub", 'Product Subcategories Lookup'[SubcategoryName]
+)
+
+//natural left outer join 
+EVALUATE
+SELECTCOLUMNS(
+    NATURALLEFTOUTERJOIN(
+        'Product Categories Lookup',
+        'Product Subcategories Lookup'
+    ),
+    "key", 'Product Categories Lookup'[ProductCategoryKey],
+    "cat", 'Product Categories Lookup'[CategoryName],
+    "sub", 'Product Subcategories Lookup'[SubcategoryName]
+)
+
+//summarize
+EVALUATE
+	SUMMARIZE(
+	'Sales Data',
+	'Product Categories Lookup'[CategoryName],
+	'Product Subcategories Lookup'[SubcategoryName],
+	"totalamt",SUM('Sales Data'[Revenue])
+	)
+	
+//roll up func
+EVALUATE
+	SUMMARIZE(
+	'Sales Data',
+	ROLLUP('Product Categories Lookup'[CategoryName]),
+	"totalamt",SUM('Sales Data'[Revenue])
+	)
+	
+//roll up  group
+EVALUATE
+	SUMMARIZE(
+	'Sales Data',
+	ROLLUPGROUP('Product Categories Lookup'[CategoryName],
+	'Product Subcategories Lookup'[SubcategoryName]),
+	"totalamt",SUM('Sales Data'[Revenue])
+	)
+// summarize coloumn 
+EVALUATE
+	SUMMARIZECOLUMNS(
+	'Product Lookup'[ProductName],
+     FILTER('Product Lookup','Product Lookup'[ProductColor] = "Black"),
+	"totalamt",SUM('Product Lookup'[ProductCost])
+	)
+	
+//roll up is add sub total 
+
+EVALUATE
+	SUMMARIZECOLUMNS(
+	ROLLUPADDISSUBTOTAL(
+	'Product Subcategories Lookup'[SubcategoryName],"grandtotal",
+	'Product Categories Lookup'[CategoryName],"sub total"),
+     FILTER('Product Lookup','Product Lookup'[ProductColor] = "Black"),
+	"totalamt",SUM('Product Lookup'[ProductCost])
+	)
+	
+//add missing item 
+EVALUATE
+ADDMISSINGITEMS(
+'Product Lookup'[ProductName],
+	SUMMARIZECOLUMNS(
+	'Product Lookup'[ProductName],
+     FILTER('Product Lookup','Product Lookup'[ProductColor] = "Black"),
+	"totalamt",SUM('Product Lookup'[ProductCost])
+	),
+	'Product Lookup'[ProductName]
+	)
+	
+//roll up is sub total
+EVALUATE
+ADDMISSINGITEMS(
+'Product Categories Lookup'[CategoryName],
+	SUMMARIZECOLUMNS(
+	ROLLUPADDISSUBTOTAL('Product Categories Lookup'[CategoryName],"grandtotal"),
+     FILTER('Product Lookup','Product Lookup'[ProductColor] = "Black"),
+	"totalamt",SUM('Product Lookup'[ProductCost])
+	),
+	ROLLUPISSUBTOTAL(
+	'Product Categories Lookup'[CategoryName],
+	[grandtotal]
+	))
+	
+//add missing item 
+EVALUATE
+ADDMISSINGITEMS(
+'Product Categories Lookup'[CategoryName],
+	SUMMARIZECOLUMNS(
+	'Product Categories Lookup'[CategoryName],
+     FILTER('Product Lookup','Product Lookup'[ProductColor] = "Black"),
+	"totalamt",SUM('Product Lookup'[ProductCost])
+	),
+	'Product Categories Lookup'[CategoryName]
+	)
+	
+//except
+EVALUATE
+	EXCEPT(
+	
+//count
+EVALUATE
+row(
+	"cuskey",COUNT('Sales Data'[CustomerKey])
+	)
+//top n 
+EVALUATE
+	TOPN(
+	10,
+	'Product Lookup',
+	[ProductCost],
+	desc
+	)
+	ORDER BY [ProductCost] desc
+	
+//top n 3 selling product
+EVALUATE
+	TOPN(
+	3,
+	SUMMARIZE(
+	'Product Lookup',
+	'Product Categories Lookup'[CategoryName],
+	"totalamt",sum('Product Lookup'[ProductCost])
+	),
+	[totalamt],	
+	desc
+	)
+	ORDER BY [totalamt] desc
+	
+//aggreate function 
+//count
+
+EVALUATE
+	ROW(
+	"totalcount",count('Sales Data'[Revenue])
+	)
+	
