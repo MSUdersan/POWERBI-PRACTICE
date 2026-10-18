@@ -1,0 +1,215 @@
+﻿//evaluate 
+EVALUATE
+	'Sales Data'
+//select coloumn 
+EVALUATE
+	SELECTCOLUMNS(
+	'Sales Data',
+	"rev",'Sales Data'[Revenue],
+	"pri",'Sales Data'[Retail Price]
+	)
+//order by 
+EVALUATE
+	SELECTCOLUMNS(
+	'Product Lookup',
+	"propri",'Product Lookup'[ProductCost],
+	"clr",'Product Lookup'[ProductColor]
+	)
+	order by [propri] desc
+//start at 
+EVALUATE
+	SELECTCOLUMNS(
+	'Product Lookup',
+	"propri",'Product Lookup'[ProductCost],
+	"clr",'Product Lookup'[ProductColor]
+	)
+	order by [propri] desc
+	start at 1913
+//row
+
+EVALUATE
+'Sales Data'
+EVALUATE
+	ROW(
+	"totalamt",sum('Sales Data'[Revenue])
+	)
+//variable 
+EVALUATE
+var tax = 18 
+var totalamt = sum('Sales Data'[Revenue])
+var finalamt = totalamt * (tax/100)
+RETURN
+	row(
+	"SALAMT",finalamt
+	)
+	
+//define 
+define 
+var tax = 18 
+
+EVALUATE
+	row(
+	"totalamt",sum('Product Lookup'[ProductCost]) * (tax/100)
+	)
+//arithmetic operator 
+define
+var tax = 10
+
+EVALUATE
+	row(
+	"amt",sum('Sales Data'[Revenue]) * (tax/100)
+	)
+	
+//comparison operator 
+EVALUATE
+	'Territory Lookup'
+EVALUATE
+	FILTER('Territory Lookup','Territory Lookup'[Continent] == "Europe"
+)
+
+EVALUATE
+	FILTER('Product Lookup','Product Lookup'[ProductCost] > 200
+	)
+	
+//concatenation 
+EVALUATE
+	ADDCOLUMNS(
+	'Customer Lookup',
+	"fullname",'Customer Lookup'[Prefix]& " "&'Customer Lookup'[FirstName]&"-"&'Customer Lookup'[LastName]
+	)
+//logical operator or 
+EVALUATE
+	FILTER('Product Lookup','Product Lookup'[ProductColor] = "Black"
+	|| 'Product Lookup'[ProductColor] = "Red"
+	)
+// and 
+EVALUATE
+	filter('Product Lookup','Product Lookup'[ProductColor]="Black" 
+	&& 'Product Lookup'[ProductCost] < 300 
+	)
+//or 
+EVALUATE
+	FILTER('Product Lookup','Product Lookup'[ProductColor] in { "Black" , "Red" }
+	)
+//and or
+EVALUATE
+	'Product Lookup'
+EVALUATE
+	FILTER
+	('Product Lookup',
+	('Product Lookup'[Price Point] = "Mid-Range" || 
+	'Product Lookup'[Price Point]="Low") 
+	&& 
+	'Product Lookup'[ProductColor]in { "Red","Silver"}
+	)
+//distict 
+EVALUATE
+	DISTINCT('Product Categories Lookup')
+EVALUATE
+	DISTINCT('Product Lookup'[ProductColor])
+//add coloumns 
+EVALUATE
+	ADDCOLUMNS(
+	'Sales Data',
+	"totalamt",sum('Sales Data'[Revenue])
+	)
+//creating new table 
+EVALUATE
+ADDCOLUMNS(
+	SELECTCOLUMNS(
+	'Sales Data',
+	"rev",'Sales Data'[Revenue],
+	"pri",'Sales Data'[Retail Price]
+	),
+	"totalamt",sum('Sales Data'[Revenue])
+	)
+//generate series 
+EVALUATE
+	GENERATESERIES(1,20)
+EVALUATE
+	GENERATESERIES(1,52,3)
+//create a data table 
+EVALUATE
+	DATATABLE(
+	"cat",string,
+	"gst",INTEGER,
+	"dates",DATETIME,
+	"maxprice",DOUBLE,
+	"status",BOOLEAN,
+	{
+	   {"mob",100,"2025-01-12 00:01:12",1200.00,TRUE},
+	   {"TAB",5000,"2026-01-10 00:01:10",52000,TRUE}
+    }
+	   )
+EVALUATE
+	'Product Categories Lookup'
+//summarize 
+EVALUATE
+	SUMMARIZE(
+	'Product Lookup',
+	'Product Categories Lookup'[CategoryName],
+	"totalprocost",SUM('Product Lookup'[ProductCost])
+	)
+//roll up
+EVALUATE
+	SUMMARIZE(
+	'Product Lookup',
+	ROLLUP('Product Categories Lookup'[CategoryName]
+	),
+	"totalprocost",SUM('Product Lookup'[ProductCost])
+	)
+//roll up group
+EVALUATE
+	SUMMARIZE(
+	'Product Lookup',
+	ROLLUP(
+	ROLLUPGROUP('Product Categories Lookup'[CategoryName],
+	'Product Subcategories Lookup'[SubcategoryName]
+	)),
+	"totalprocost",SUM('Product Lookup'[ProductCost])
+	)
+//summarize coloumns functions
+EVALUATE
+	SUMMARIZECOLUMNS(
+	'Product Categories Lookup'[CategoryName],
+	FILTER('Product Lookup','Product Lookup'[ProductColor] = "Red"),
+	"totalamt",sum('Product Lookup'[ProductCost])
+	)
+	
+//roll up is add sub total 
+EVALUATE
+	SUMMARIZECOLUMNS(
+	ROLLUPADDISSUBTOTAL(
+	'Product Categories Lookup'[CategoryName],"grndtotal",
+	'Product Subcategories Lookup'[SubcategoryName],"subtotal"
+	),
+	FILTER('Product Lookup','Product Lookup'[ProductColor] = "Red"),
+	"totalamt",sum('Product Lookup'[ProductCost])
+	)
+//add missing items 
+EVALUATE
+	ADDMISSINGITEMS(
+	'Product Categories Lookup'[CategoryName],
+	SUMMARIZECOLUMNS(
+	'Product Categories Lookup'[CategoryName],
+	FILTER('Product Lookup','Product Lookup'[ProductColor] = "Red"),
+	"totalamt",sum('Product Lookup'[ProductCost])
+	),
+	'Product Categories Lookup'[CategoryName]
+	)
+//rollup is sub total
+EVALUATE
+	ADDMISSINGITEMS(
+	'Product Categories Lookup'[CategoryName],
+	SUMMARIZECOLUMNS(
+	ROLLUPADDISSUBTOTAL('Product Categories Lookup'[CategoryName],"grandtotal"),
+	FILTER('Product Lookup','Product Lookup'[ProductColor] = "Red"),
+	"totalamt",sum('Product Lookup'[ProductCost])
+	),
+	ROLLUPISSUBTOTAL(
+	'Product Categories Lookup'[CategoryName],
+	[grandtotal]
+	))
+
+	
+	

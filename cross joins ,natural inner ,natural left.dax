@@ -1,0 +1,63 @@
+﻿//EVA
+EVALUATE
+	Students
+	
+//CROSS JOIN 
+EVALUATE
+	CROSSJOIN(
+	SELECTCOLUMNS(Students,
+	"STUDNAME",Students[StudentName]),
+	SELECTCOLUMNS(Courses,
+	"COURNAME",Courses[CourseName]
+	))
+//GENERATE 
+EVALUATE
+	GENERATE(
+	SELECTCOLUMNS(
+	Students,Students[StudentName],Students[StudentID]),
+	FILTER(Payments,Payments[StudentID] = Students[StudentID])
+	)
+//GENERATE ALL 
+EVALUATE
+	GENERATEALL(
+	SELECTCOLUMNS(
+	Students,Students[StudentName],Students[StudentID]),
+	FILTER(Payments,Payments[StudentID] = Students[StudentID])
+	)
+EVALUATE
+	Payments
+//NATURAL JOIN 
+EVALUATE
+SELECTCOLUMNS(
+	NATURALINNERJOIN(Students,Payments),
+	[StudentName],
+	[AmountPaid],
+	[PaymentMode]
+	)
+EVALUATE
+	DISTINCT(Students[StudentName])
+//natural left join 
+EVALUATE
+SELECTCOLUMNS(
+	NATURALLEFTOUTERJOIN(Students,Payments),
+	[StudentName],
+	[AmountPaid],
+	[PaymentMode]
+	)
+	
+//summarize function 
+EVALUATE
+	SUMMARIZE(
+	Payments,
+	Students[StudentName],
+	Courses[CourseName],
+	"totalamt",SUM(Payments[AmountPaid])
+	)
+//rollup
+EVALUATE
+	SUMMARIZE(
+	Payments,
+	ROLLUP(Students[StudentName]
+	),
+	"totalamt",SUM(Payments[AmountPaid])
+	)
