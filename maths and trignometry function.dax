@@ -1,0 +1,113 @@
+﻿// maths and trignometry function 
+//evaluate 
+EVALUATE
+	MathNumbers
+//div
+EVALUATE
+	ADDCOLUMNS(
+	MathNumbers,
+	"div",DIVIDE(MathNumbers[Num1],MathNumbers[Num3],0)
+	)
+	
+//mod function 
+EVALUATE
+	ADDCOLUMNS(
+	MathNumbers,
+	"mod",if(
+	MathNumbers[Num3]<> 0 ,
+	MOD(MathNumbers[Num1],
+	MathNumbers[Num3]),
+	0 )
+	)
+	
+//ceiling and floor 
+EVALUATE
+	SELECTCOLUMNS(
+	MathNumbers,
+	"d",MathNumbers[Num1],
+	"flo",FLOOR(MathNumbers[Num1],10),
+	"ceil",CEILING(MathNumbers[Num1],100)
+	)
+	
+//rounding decimal
+EVALUATE
+	SELECTCOLUMNS(
+	MathNumbers,
+	"d",MathNumbers[Num1],
+	"round",ROUND(MathNumbers[Num1],0),
+	"round1",ROUND(MathNumbers[Num1],1),
+	"roundneg1",ROUND(MathNumbers[Num1],-1)
+	)
+//rounding up and down 
+EVALUATE
+	SELECTCOLUMNS(
+	MathNumbers,
+	"d",MathNumbers[Num1],
+	"up",ROUNDUP(MathNumbers[Num1],0),
+	"down",ROUNDDOWN(MathNumbers[Num1],0)
+	)
+	
+//truncate
+EVALUATE
+	SELECTCOLUMNS(
+	MathNumbers,
+	"d",MathNumbers[Num1],
+	"trun",TRUNC(MathNumbers[Num1],1)
+	)
+//round by even numbers and odd numbers  
+EVALUATE
+	SELECTCOLUMNS(
+	MathNumbers,
+	"d",MathNumbers[Num1],
+	"evennum",EVEN(MathNumbers[Num1]),
+	"oddnum1",odd(MathNumbers[Num1])
+	)
+//power 
+EVALUATE
+	SELECTCOLUMNS(
+	MathNumbers,
+	"d",MathNumbers[Num2],
+	"sq",POWER(MathNumbers[Num2],2),
+	"cube",power(MathNumbers[Num2],3)
+	)
+//sq root 
+EVALUATE
+		SELECTCOLUMNS(
+	            MathNumbers,
+	            "d",MathNumbers[Num2],
+	             "sq",SQRT(MathNumbers[Num2])
+	             )
+//exponential growth 
+EVALUATE
+	SELECTCOLUMNS(
+	MathNumbers,
+	"d",MathNumbers[Num1],
+	"exp",EXP(MathNumbers[Num1])
+	)
+	
+// sign and absolute 
+EVALUATE
+	SELECTCOLUMNS(
+	MathNumbers,
+	"d",MathNumbers[Num1],
+	"sign",SIGN(MathNumbers[Num1]),
+	"absolute",ABS(MathNumbers[Num1])
+	)
+	
+//gcd and lcm 
+EVALUATE
+	SELECTCOLUMNS(
+	MathNumbers,
+	"d",MathNumbers[Num1],
+	"e",MathNumbers[Num1],
+	"gcd",GCD(MathNumbers[Num3],MathNumbers[Num2]),
+	"lcm",LCM(MathNumbers[Num3],MathNumbers[Num2])
+	)
+//logarithm 
+EVALUATE
+	SELECTCOLUMNS(
+	MathNumbers,
+	"d",MathNumbers[Num1],
+	"log",LOG(MathNumbers[Num2],5),
+	"log10",LOG10(MathNumbers[Num2])
+	)
