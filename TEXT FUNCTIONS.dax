@@ -1,0 +1,154 @@
+﻿// text function 
+EVALUATE
+	'DAX Text Practice'
+	
+//concatenation 	
+EVALUATE
+SELECTCOLUMNS(
+	'DAX Text Practice',
+	'DAX Text Practice'[FirstName],
+	'DAX Text Practice'[LastName],
+	'DAX Text Practice'[City],
+	"nameloc",CONCATENATE('DAX Text Practice'[FullName],'DAX Text Practice'[City]),
+	"name",CONCATENATE('DAX Text Practice'[FullName],CONCATENATE(" - " ,'DAX Text Practice'[City]))
+	)
+	
+// combine values 
+EVALUATE
+	SELECTCOLUMNS(
+	'DAX Text Practice',
+	'DAX Text Practice'[FirstName],
+	'DAX Text Practice'[LastName],
+	'DAX Text Practice'[City],
+	'DAX Text Practice'[Country],
+	
+	"namecity",COMBINEVALUES
+			(" - ",'DAX Text Practice'[FullName],
+					'DAX Text Practice'[City],
+					'DAX Text Practice'[Country]
+			  )
+	)
+	
+//concatenate x
+EVALUATE
+	row(
+	"pro",CONCATENATEX('DAX Text Practice','DAX Text Practice'[ProductName],",",'DAX Text Practice'[ProductName],ASC)
+	)
+	
+//exact function 
+EVALUATE
+	ADDCOLUMNS(
+			'DAX Text Practice',
+			"COMPTXT",EXACT('DAX Text Practice'[SearchText],"gmail")
+			)
+			
+			
+EVALUATE
+	'DAX Text Practice'
+	
+//find and search 
+EVALUATE
+	SELECTCOLUMNS(
+	'DAX Text Practice',
+	"skill",[ExactText2],
+	"find",find("Python",'DAX Text Practice'[ExactText1],1,BLANK()),
+	"search",search("python",'DAX Text Practice'[ExactText2],1,BLANK())
+	)
+	
+//fixed 
+EVALUATE
+	SELECTCOLUMNS(
+	'DAX Text Practice',
+	"amount",'DAX Text Practice'[AmountText],
+	"score",'DAX Text Practice'[ScoreText],
+	"fix",FIXED('DAX Text Practice'[AmountText],2),
+	"fixcommas",FIXED(1000000000,2,True),    // true without comma 
+	"fixcommas1",FIXED(1000000000,2,false)  // false place a comm
+	)
+EVALUATE
+'DAX Text Practice'
+
+//format
+EVALUATE
+	SELECTCOLUMNS(
+	'DAX Text Practice',
+	"date",'DAX Text Practice'[DateValue],
+	"formatdate",FORMAT('DAX Text Practice'[DateValue],"d/mmm/yy")
+	)
+	
+//format//general num,std,fixed
+EVALUATE
+	SELECTCOLUMNS(
+	'DAX Text Practice',
+	"amount",'DAX Text Practice'[AmountText],
+	"score",'DAX Text Practice'[ScoreText],
+	"general",FORMAT('DAX Text Practice'[AmountText],"General Number"),// same as amttext
+	"std",FORMAT('DAX Text Practice'[AmountText],"standard"),          // std will add seperator like(,)
+	"fix",FORMAT('DAX Text Practice'[AmountText],"fixed") ,             //fix will add decimal values 2 
+	"currency",FORMAT('DAX Text Practice'[AmountText],"Currency")      // it will give value in currency
+	)
+	
+//value 
+EVALUATE
+	SELECTCOLUMNS(
+	'DAX Text Practice',
+	"amount",'DAX Text Practice'[AmountText],
+	"score",'DAX Text Practice'[ScoreText],
+	"final",IFERROR(VALUE('DAX Text Practice'[AmountText]),0)/IFERROR(VALUE('DAX Text Practice'[ScoreText]),0)
+	//value va convert pannuro sometimes col la NA irukum athuku 0 podurom
+	)
+	
+//left , mid and right 
+EVALUATE
+	SELECTCOLUMNS(
+	'DAX Text Practice',
+	'DAX Text Practice'[DateValue],
+	"day",LEFT('DAX Text Practice'[DateValue],2),
+	"month",MID('DAX Text Practice'[DateValue],4,2),
+	"year",RIGHT('DAX Text Practice'[DateValue],4)
+	)
+	
+//length 
+EVALUATE
+	SELECTCOLUMNS(
+	'DAX Text Practice',
+	"city",'DAX Text Practice'[City],
+	"len",LEN('DAX Text Practice'[City])
+	)
+EVALUATE
+	'DAX Text Practice'
+//TRIM
+EVALUATE
+	SELECTCOLUMNS(
+	'DAX Text Practice',
+	"RAW",'DAX Text Practice'[RawText],
+	"LEN",LEN('DAX Text Practice'[RawText]),
+	"TRIM",TRIM('DAX Text Practice'[RawText]),
+	"TRILEN",LEN(TRIM('DAX Text Practice'[RawText]))
+	)
+EVALUATE
+	'DAX Text Practice'
+	
+// REPLACE AND SUBSTITUTE 
+EVALUATE
+	SELECTCOLUMNS(
+	'DAX Text Practice',
+	"DATE",'DAX Text Practice'[DateValue],
+	"UPDATE",REPLACE('DAX Text Practice'[DateValue],1,2,"08"),// change the date in entire coloumn the format must same in all row 
+	"SUBS",SUBSTITUTE('DAX Text Practice'[ExactText2],"PYTHON","Python") //sub like update in sql 
+	)
+	
+//upper and lower 
+EVALUATE
+	SELECTCOLUMNS(
+	'DAX Text Practice',
+	"city",'DAX Text Practice'[City],
+	"UP",UPPER('DAX Text Practice'[City]),
+	"LOWER",LOWER('DAX Text Practice'[City])
+	)
+	
+//REPEAT
+EVALUATE
+	ROW(
+	"#",REPT("#",5)
+	)
